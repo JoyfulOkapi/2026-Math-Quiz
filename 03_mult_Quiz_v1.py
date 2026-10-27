@@ -1,0 +1,170 @@
+import random
+
+def string_checker(question, valid_ans=("yes", "no")):
+    """Checks user response for a yes/no answer."""
+
+    while True:
+        response = input(question).lower().strip()
+
+        if response == "yes" or response == "y":
+             return "yes"
+        elif response == "no" or response == "n":
+            return "no"
+        else:
+             print("Please enter yes / no")
+
+
+def int_check(question):
+  while True:
+        error = "Please enter an integer that is 1 or more."
+
+        to_check = input(question)
+
+        # check for infinite mode
+        if to_check == "":
+             return "infinite"
+
+        try:
+          response = int(to_check)
+
+          # checks that the number is more than / equal to 1
+          if response < 1:
+               print(error)
+          else:
+              return response
+
+        except ValueError:
+             print(error)
+
+
+current_round = 0
+score = 0
+
+# Main Routine Starts here
+
+rounds_lost = 0
+rounds_won=0
+rounds_played = 0
+
+# welcome the user to the game (heading)
+
+
+game_history = []
+print("Math Multiplication Game")
+print()
+
+
+
+# Game loop starts here
+
+want_instructions=string_checker("Do you want to see the instructions? ")
+
+if want_instructions == "yes":
+    print('''
+**** Instructions ****
+
+To begin, choose the number of rounds (or press <enter> for
+infinite mode).
+
+Then answer the multiplication equations using numbers.
+
+Type xxx to end the game at any time.
+
+Good Luck!
+    ''')
+
+else:
+      print()
+
+# Ask user for number of rounds / infinite mode
+num_rounds=int_check("How many rounds would you like? Push <enter> for infinite mode: ")
+
+mode = num_rounds
+
+if num_rounds == "infinite":
+   mode = "infinite"
+
+
+while mode == "infinite" or rounds_played < num_rounds:
+
+    # Rounds headings (based on mode)
+    if mode == "infinite":
+         rounds_heading = f"\n💽💽💽 Round {rounds_played + 1} (Infinite Mode) 💽💽💽"
+    else:
+       rounds_heading = f"\n💽💽💽 Round {rounds_played + 1} of {num_rounds} 💽💽💽"
+
+    print(rounds_heading)
+
+    first_number = random.randint(1, 12)
+    second_number=random.randint(1, 12)
+
+    correct_answer = first_number * second_number
+
+    # Get the user's answer
+    user_input = input(
+        f"What is {first_number} x {second_number}? "
+    ).strip().lower()
+
+
+    # End the game
+    if user_input == "xxx":
+        break
+
+    # Validate and check the answer
+    try:
+       user_answer = int(user_input)
+
+       if user_answer == correct_answer:
+            print("✅ Correct! Nice job.")
+            score += 1
+            rounds_won += 1
+            round_result = "Correct"
+       else:
+          print(f"❌ Wrong. The correct answer was {correct_answer}.")
+          rounds_lost += 1
+          round_result = "Incorrect"
+
+    except ValueError:
+          print("Please enter a number.")
+          continue
+
+
+    # Save round history
+    history_item = (
+        f"Round {rounds_played + 1}: "
+        f"{first_number} x {second_number} = {user_answer} "
+        f"| Correct answer = {correct_answer} "
+        f"| {round_result}"
+    )
+
+    game_history.append(history_item)
+
+    rounds_played += 1
+
+
+
+# ask user if they want to see their game history
+see_history=string_checker("\nDo you want to see your game history? ")
+
+if see_history == "yes":
+   for item in game_history:
+        print(item)
+
+# Game History / Statistics area
+
+if rounds_played > 0:
+
+    # Calculate Statistics
+    percent_won = rounds_won / rounds_played * 100
+    percent_lost=rounds_lost / rounds_played * 100
+
+    # Output Game Statistics
+    print()
+    print("📈📈📈 Game Statistics 📉📉📉")
+    print(f"Rounds played: {rounds_played}")
+    print(f"Won: {rounds_won} ({percent_won:.2f}%)")
+    print(f"Lost: {rounds_lost} ({percent_lost:.2f}%)")
+    print(f"Score: {score}")
+
+print()
+print("Thanks for playing.")
